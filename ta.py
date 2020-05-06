@@ -10,7 +10,7 @@ import heapq
 import numpy as np
 from scipy import optimize
 
-inputLocation = "Sioux Falls network/"
+inputLocation = "Data/"
 
 class Zone:
     def __init__(self, _tmpIn):
@@ -205,12 +205,15 @@ def tracePreds(dest):
     '''
     This method traverses predecessor nodes in order to create a shortest path
     '''
-    prevNode = nodeSet[dest].pred
-    spLinks = []
-    while nodeSet[dest].pred != "NA":
-        spLinks.append((prevNode, dest))
-        dest = prevNode
+    try: #halil-sahin: we need a keyError conroller
         prevNode = nodeSet[dest].pred
+        spLinks = []
+        while nodeSet[dest].pred != "NA":
+            spLinks.append((prevNode, dest))
+            dest = prevNode
+            prevNode = nodeSet[dest].pred
+    except KeyError as error:
+        print(error)
     return spLinks
 
 

@@ -7,7 +7,7 @@ Created on Sun May 28 21:09:46 2017
 
 
 inputLocation = 'Raw Data/'
-inputLocation2 = 'Data/'
+outputLocation = 'Data/'
 
 
 od = {}
@@ -22,7 +22,7 @@ with open(inputLocation+"SiouxFalls_trips.tntp", "r") as f:
         else:
             elements = line.split(";")  # get our elements by splitting by semi-colon
             for element in elements:  # loop through each of them:
-                if not element:  # we're not interested in the last element
+                if not ':' in element:  # we're not interested in the last element #halil-sahin:its better way
                     continue
                 element_no, element_value = element.split(":")  # get our pair
                 # beware, these two are now most likely padded strings!
@@ -39,7 +39,8 @@ with open(inputLocation+"SiouxFalls_net.tntp", "r") as f:
         line = line.rstrip()
         line = line.split(";")[0].split('\t')
         #print([line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8]])
-        network[line[1], line[2]] = [line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8]]
+        if len(line) >= 8: #halil-sahin: This control is necessary
+            network[line[1], line[2]] = [line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8]]
 
 
 
@@ -47,7 +48,7 @@ with open(inputLocation+"SiouxFalls_net.tntp", "r") as f:
 
 
 def printOD_flows():
-    outFile = open(inputLocation2+"demand.dat", "w")
+    outFile = open(outputLocation+"demand.dat", "w")
     tmpOut = "origin\tdest\tdemand"
     outFile.write(tmpOut+"\n")
     for d in od:
@@ -56,7 +57,7 @@ def printOD_flows():
     outFile.close()
 
 def printNetwork():
-    outFile = open(inputLocation2+"network.dat", "w")
+    outFile = open(outputLocation+"network.dat", "w")
     tmpOut = "origin\tdest\tcapacity\tlength\tfft\talpha\tbeta\tspeedLimit"
     outFile.write(tmpOut+"\n")
     for link in network:
